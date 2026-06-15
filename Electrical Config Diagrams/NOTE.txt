@@ -1,0 +1,1 @@
+Note that the Raspberry Pi Pico shown here is not the one used in the project (Wowki - the circuit simulator I used, only has the raspberry pi Pico), it is a microcontroller and NOT a single-board computer. the Pico has been used as a visual substitute for the Raspberry Pi 3B+ which is what was actually used. The Pico I/O pins of the diagram are therefore irrelevant.
