@@ -1,3 +1,6 @@
+THIS IS AN EXTENSION/REMAKING OF ANOTHER REPO.
+See the original repo here: https://github.com/mattwu17/Cube-Robot.git
+
 <h1 align="center">Cube-Robot</h1>
 
 <h2 align="center">A robot that solves Rubik's Cubes</body>
