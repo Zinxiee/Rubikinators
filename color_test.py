@@ -2,14 +2,68 @@
 import cv2
 import numpy as np
 import time
+import serial
+from serial.tools import list_ports
 # A required callback method that goes into the trackbar function.
 def nothing(x):
     pass
+
+
+def open_arduino_serial():
+    preferred_tokens = ("arduino", "ch340", "usb serial", "cp210", "ttyacm", "ttyusb")
+    discovered_ports = []
+
+    for port_info in list_ports.comports():
+        description = f"{port_info.description} {port_info.manufacturer or ''} {port_info.hwid or ''}".lower()
+        if any(token in description for token in preferred_tokens):
+            discovered_ports.insert(0, port_info.device)
+        else:
+            discovered_ports.append(port_info.device)
+
+    fallback_ports = ["COM3", "COM4", "COM5", "/dev/ttyACM0", "/dev/ttyUSB0"]
+
+    for port_name in discovered_ports + fallback_ports:
+        try:
+            return serial.Serial(
+                port=port_name,
+                baudrate=9600,
+                parity=serial.PARITY_NONE,
+                stopbits=serial.STOPBITS_ONE,
+                bytesize=serial.EIGHTBITS,
+                timeout=1,
+                write_timeout=1,
+            )
+        except serial.SerialException:
+            continue
+
+    raise RuntimeError("Could not find the Arduino serial port. Update the port list in color_test.py.")
+
+
+def set_lights(ser, mode):
+    if mode == "top":
+        ser.write(b"Z")
+        time.sleep(0.05)
+        ser.write(b"D")
+        time.sleep(0.05)
+        ser.write(b"T")
+    elif mode == "bottom":
+        ser.write(b"Z")
+        time.sleep(0.05)
+        ser.write(b"D")
+        time.sleep(0.05)
+        ser.write(b"B")
+    else:
+        ser.write(b"Z")
 
 # Initializing the webcam feed.
 cap = cv2.VideoCapture(0)
 cap.set(3,1280)
 cap.set(4,720)
+
+ser = open_arduino_serial()
+light_mode = None
+
+print("Controls: press 't' for top lights, 'b' for bottom lights, 'o' to turn lights off, ESC to quit, 's' to save HSV values.")
 
 # Create a window named trackbars.
 cv2.namedWindow("Trackbars")
@@ -74,6 +128,24 @@ while True:
     key = cv2.waitKey(1)
     if key == 27:
         break
+
+    if key == ord('t'):
+        light_mode = "top"
+        set_lights(ser, light_mode)
+        print("Top rings on.")
+        continue
+
+    if key == ord('b'):
+        light_mode = "bottom"
+        set_lights(ser, light_mode)
+        print("Bottom rings on.")
+        continue
+
+    if key == ord('o'):
+        light_mode = None
+        set_lights(ser, "off")
+        print("Lights off.")
+        continue
     
     # If the user presses `s` then print this array.
     if key == ord('s'):
@@ -87,6 +159,8 @@ while True:
     
 # Release the camera & destroy the windows.    
 cap.release()
+set_lights(ser, "off")
+ser.close()
 cv2.destroyAllWindows()
 
 
