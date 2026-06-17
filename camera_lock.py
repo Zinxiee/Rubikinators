@@ -1,8 +1,12 @@
 import subprocess
+import time
+
+# Wait 5 seconds to ensure USB webcams are fully booted and recognized by the Pi (toggle if running at boot!)
+# time.sleep(5)
 
 # --- CONFIGURE YOUR CAMERAS HERE ---
 # Check 'v4l2-ctl --list-devices' in terminal to find your ports. 
-CAMERA_PORTS = [0, 1] 
+CAMERA_PORTS = [0, 2] 
 
 # Tweak these values based on your room/LED lighting
 EXPOSURE_VAL = 250  # Lower = darker, Higher = brighter
