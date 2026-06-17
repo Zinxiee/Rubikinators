@@ -1,4 +1,5 @@
 #finding hsv range of target object(pen)
+import camera_lock
 import cv2
 import numpy as np
 import time
