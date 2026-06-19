@@ -8,9 +8,20 @@ import stepper
 
 ########## CONSTANTS ##########
 
+# Pixel locations of cube facelets in the image, in (x,y) format
+U = (374, 85), (400, 97), (472, 110), (283, 98), ("White"), (416, 128), (211, 114), (270, 130), (342, 148)
+R = (386, 216), (457, 188), (510, 166), (378, 314), ("Red"), (500, 250), (386, 400), (448, 358), (492, 345)
+F = (180, 171), (238, 186), (308, 216), (189, 254), ("Green"), (310, 314), (201, 340), (252, 362), (316, 400)
+D = 
+# L
+# B
+
 # ALL VARIABLES PRECEEDED WITH "t_" INDICATE THEY ARE FOR TOP CAM, "b_" FOR BOTTOM CAM
-t_coord_list = [(329,45),(362,67),(428,101),(247,62),(299,107),(368,128),(178,90),(231,124),(299,165),(333,241),(404,190),(457,161),(332,310),(379,256),(445,223),(327,364),(385,319),(445,262),(145,150),(197,187),(257,237),(157,215),(214,252),(261,307),(157,257),(209,314),(263,366)]
-b_coord_list = [(440,304),(387,332),(356,353),(397,277),(333,293),(285,332),(332,241),(274,277),(227,307),(361,65),(412,102),(466,155),(362,113),(405,161),(466,190),(367,177),(427,220),(475,253),(203,159),(251,106),(303,63),(203,194),(258,163),(300,116),(197,256),(240,222),(296,179)]
+t_coord_list = [U, R, F]
+b_coord_list = [D, L, B]
+    (440,304),(387,332),(356,353),(397,277),(333,293),(285,332),(332,241),(274,277),(227,307),
+                (361,65),(412,102),(466,155),(362,113),(405,161),(466,190),(367,177),(427,220),(475,253),
+                (203,159),(251,106),(303,63),(203,194),(258,163),(300,116),(197,256),(240,222),(296,179)]
 
 # RANGES FOR MASKS
 # orange has HSV hue value that wraps around circle, so we have 2 masks
@@ -180,7 +191,19 @@ def main():
                 cube += '2'
                 print('O')
         
-        # hash map to convert colors into faces for algorithm
+        # hardcoded orientation for the solving algorithm:
+        # White = U, Red = R, Green = F, Yellow = D, Blue = B, Orange = L
+        cube = cube.replace('6', 'U')
+        cube = cube.replace('1', 'R')
+        cube = cube.replace('3', 'F')
+        cube = cube.replace('5', 'D')
+        cube = cube.replace('2', 'L')
+        cube = cube.replace('4', 'B')
+
+        
+'''     # original non-hardcoded version (this will not work with current setup)
+
+        # Hash map to convert colors into faces for algorithm
         convert = {'U': cube[4],
                    'R': cube[13],
                    'F': cube[22],
@@ -194,6 +217,7 @@ def main():
         cube = cube.replace(convert['D'], 'D')
         cube = cube.replace(convert['L'], 'L')
         cube = cube.replace(convert['B'], 'B')
+'''
         
         ########## MOVING THE MOTORS ##########
         
